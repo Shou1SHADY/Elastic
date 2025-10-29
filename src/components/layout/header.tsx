@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, ArrowUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -14,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useScroll } from '@/hooks/use-scroll';
+import { gsap } from 'gsap';
 
 const navLinks = [
   { href: '/about', label: 'About', arLabel: 'من نحن' },
@@ -29,8 +31,33 @@ const Header: FC = () => {
   const lang = pathname.split('/')[1] as 'en' | 'ar';
   const isAr = lang === 'ar';
 
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const { isScrolled, scrollDirection } = useScroll(100);
+  const [isHovered, setIsHovered] = useState(false);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+
+
+  const isShrunken = isScrolled && scrollDirection === 'down' && !isHovered;
+
+  useEffect(() => {
+    const tl = gsap.timeline();
+
+    if (isShrunken) {
+      tl.to(headerRef.current, { width: 56, height: 56, borderRadius: '50%', duration: 0.4, ease: 'power3.inOut' })
+        .to([navRef.current, langRef.current], { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4')
+        .to(logoRef.current, { x: isAr ? 4 : -4, duration: 0.4, ease: 'power3.inOut'}, '-=0.4');
+    } else {
+      tl.to(headerRef.current, { width: 'auto', height: 56, borderRadius: '9999px', duration: 0.4, ease: 'power3.inOut' })
+        .to([navRef.current, langRef.current], { opacity: 1, duration: 0.3, ease: 'power3.inOut' }, '-=0.2')
+        .to(logoRef.current, { x: 0, duration: 0.4, ease: 'power3.inOut'}, '-=0.4');
+    }
+
+  }, [isShrunken, isAr]);
+
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const getLabel = (link: typeof navLinks[0]) => (isAr ? link.arLabel : link.label);
 
   const getLocaleHref = (href: string) => {
@@ -47,13 +74,17 @@ const Header: FC = () => {
   return (
     <>
       <header
-        className='fixed top-8 left-1/2 -translate-x-1/2 z-50'
+        className='fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50'
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="flex h-14 items-center justify-center rounded-full border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6">
+        <div ref={headerRef} className="flex h-14 items-center justify-center border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden">
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
-            <Logo />
+            <div ref={logoRef}>
+              <Logo />
+            </div>
           </Link>
-          <nav className={cn("hidden md:flex items-center", isAr ? "space-x-reverse space-x-6" : "space-x-6")}>
+          <nav ref={navRef} className={cn("hidden md:flex items-center", isAr ? "space-x-reverse space-x-6" : "space-x-6")}>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -66,7 +97,7 @@ const Header: FC = () => {
             ))}
           </nav>
 
-          <div className={cn("hidden md:flex items-center", isAr ? "mr-4" : "ml-4")}>
+          <div ref={langRef} className={cn("hidden md:flex items-center", isAr ? "mr-4" : "ml-4")}>
              <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
