@@ -7,47 +7,86 @@ import { ArrowDown } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const frameCount = 148;
+const currentFrame = (index: number) => `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(index + 1).toString().padStart(4, '0')}.jpg`;
+
 export default function Hero() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const canvas = canvasRef.current;
     const hero = heroRef.current;
     const text = textRef.current;
     const arrow = arrowRef.current;
 
-    if (!video || !hero || !text || !arrow) return;
+    if (!canvas || !hero || !text || !arrow) return;
 
-    // Ensure video is ready for seeking
-    const onLoadedMetadata = () => {
-      video.pause();
-      video.currentTime = 0;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    
+    canvas.width = 1158;
+    canvas.height = 770;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5, // smooth scrubbing
-        },
-      });
-
-      // Animate video currentTime
-      tl.to(video, {
-        currentTime: video.duration,
-        ease: 'none',
-      }, 0);
-      
-      // Animate text fade/move
-      tl.to(text, {
-        y: -150,
-        opacity: 0,
-        ease: 'none',
-      }, 0);
+    const images: HTMLImageElement[] = [];
+    const imageSequence = {
+      frame: 0,
     };
+
+    const preloadImages = () => {
+      for (let i = 0; i < frameCount; i++) {
+        const img = new Image();
+        img.src = currentFrame(i);
+        images.push(img);
+      }
+    };
+    
+    preloadImages();
+    
+    const firstImage = images[0];
+    firstImage.onload = () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(firstImage, 0, 0);
+    };
+
+    const render = () => {
+      if(images[imageSequence.frame]) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(images[imageSequence.frame], 0, 0);
+      }
+    };
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+      },
+      onUpdate: render,
+    });
+    
+    tl.to(imageSequence, {
+      frame: frameCount - 1,
+      snap: 'frame',
+      ease: 'none',
+      duration: 1,
+    });
+
+    // Animate text fade/move
+    gsap.to(text, {
+      y: -150,
+      opacity: 0,
+      ease: 'none',
+       scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5,
+      },
+    });
 
     // Fade out arrow quickly
     gsap.to(arrow, {
@@ -61,47 +100,26 @@ export default function Hero() {
       },
     });
 
-    video.addEventListener('loadedmetadata', onLoadedMetadata);
-
-    // This helps with autoplay issues on some browsers
-    video.play().catch(() => {
-      console.info('Autoplay was prevented. Scroll will control the video.');
-    });
-
     return () => {
-      video.removeEventListener('loadedmetadata', onLoadedMetadata);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
-          preload="auto"
-          playsInline
-          muted
-          loop
-          crossOrigin="anonymous"
-          src="https://storage.googleapis.com/studio-hosting-assets/hero-video.mp4"
-        />
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+        <canvas ref={canvasRef} className="w-full h-auto max-w-full max-h-full object-contain"></canvas>
         
-        <div className="absolute inset-0 bg-black/50 z-10" />
-        <div
-          className="absolute inset-0 z-10"
-          style={{ boxShadow: 'inset 0 0 10rem 3rem hsl(var(--background))' }}
-        />
-
+        <div className="absolute inset-0 bg-black/20 z-10" />
+        
         <div
           ref={textRef}
-          className="relative z-20 flex h-full flex-col items-center justify-center text-center"
+          className="absolute inset-0 z-20 flex h-full flex-col items-center justify-center text-center"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white drop-shadow-2xl">
             Elastic – Molding Ideas Into Reality
           </h1>
-          <p className="mt-6 text-lg md:text-xl max-w-2xl text-muted-foreground">
+          <p className="mt-6 text-lg md:text-xl max-w-2xl text-white/80">
             Premium custom rubber keychains and patches, manufactured with precision and innovation.
           </p>
         </div>
@@ -110,8 +128,8 @@ export default function Hero() {
           ref={arrowRef}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center space-y-2"
         >
-          <span className="text-sm text-muted-foreground">Scroll to explore</span>
-          <ArrowDown className="animate-bounce" />
+          <span className="text-sm text-white/80">Scroll to explore</span>
+          <ArrowDown className="animate-bounce text-white" />
         </div>
       </div>
     </section>
