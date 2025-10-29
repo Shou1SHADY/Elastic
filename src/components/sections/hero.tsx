@@ -10,6 +10,20 @@ gsap.registerPlugin(ScrollTrigger);
 const frameCount = 148;
 const currentFrame = (index: number) => `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(index + 1).toString().padStart(4, '0')}.jpg`;
 
+// Function to draw image with 'cover' behavior
+const drawImageCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
+  const canvas = ctx.canvas;
+  const hRatio = canvas.width / img.width;
+  const vRatio = canvas.height / img.height;
+  const ratio = Math.max(hRatio, vRatio);
+  const centerShift_x = (canvas.width - img.width * ratio) / 2;
+  const centerShift_y = (canvas.height - img.height * ratio) / 2;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, img.width, img.height,
+                centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
+}
+
+
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -47,14 +61,14 @@ export default function Hero() {
     
     const firstImage = images[0];
     firstImage.onload = () => {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(firstImage, 0, 0, canvas.width, canvas.height);
+        if(context) {
+          drawImageCover(context, firstImage);
+        }
     };
 
     const render = () => {
-      if(images[imageSequence.frame]) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(images[imageSequence.frame], 0, 0, canvas.width, canvas.height);
+      if(images[imageSequence.frame] && context) {
+        drawImageCover(context, images[imageSequence.frame]);
       }
     };
 
