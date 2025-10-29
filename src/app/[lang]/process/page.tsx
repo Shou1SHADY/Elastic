@@ -105,38 +105,83 @@ export default function ProcessPage() {
     const isAr = lang === 'ar';
     const t = translations[lang] || translations.en;
     
-    const progressBarRef = useRef<HTMLDivElement>(null);
+    const timelineRef = useRef<HTMLDivElement>(null);
+    const progressRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        gsap.to(progressBarRef.current, {
-            scaleX: 1,
+        const timeline = timelineRef.current;
+        const progress = progressRef.current;
+        if (!timeline || !progress) return;
+
+        ScrollTrigger.create({
+            trigger: timeline,
+            start: "top center",
+            end: "bottom center",
+            onUpdate: (self) => {
+                gsap.set(progress, { height: `${self.progress * 100}%` });
+            },
+        });
+
+        const steps = gsap.utils.toArray<HTMLDivElement>('.process-step');
+        steps.forEach((step, i) => {
+            const icon = step.querySelector('.step-icon');
+            const content = step.querySelector('.step-content');
+
+            gsap.fromTo(icon, 
+                { scale: 0.5, autoAlpha: 0.5 }, 
+                {
+                    scale: 1,
+                    autoAlpha: 1,
+                    ease: "power2.inOut",
+                    scrollTrigger: {
+                        trigger: step,
+                        start: 'top center',
+                        end: 'top 40%',
+                        scrub: true,
+                        toggleClass: { targets: icon, className: 'is-active' }
+                    }
+                }
+            );
+
+            const isReversed = i % 2 !== 0;
+            const xVal = isReversed ? -100 : 100;
+
+            gsap.fromTo(content, 
+                { x: isAr ? -xVal : xVal, autoAlpha: 0 }, 
+                {
+                    x: 0,
+                    autoAlpha: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: step,
+                        start: 'top 75%',
+                        toggleActions: 'play none none reverse',
+                    }
+                }
+            );
+        });
+
+        // Animate the final CTA card
+        gsap.fromTo('.cta-card-animate', {
+            opacity: 0,
+            y: 100
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power3.out',
             scrollTrigger: {
-                scrub: 0.5,
+                trigger: '.cta-card-animate',
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
             }
         });
 
-        const steps = gsap.utils.toArray('.process-step');
-        steps.forEach(step => {
-            gsap.fromTo(step, {
-                opacity: 0,
-                y: 100
-            }, {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: step as gsap.DOMTarget,
-                    start: 'top 85%',
-                    toggleActions: 'play none none reverse',
-                }
-            });
-        });
-    }, []);
+    }, [isAr]);
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
-            <div ref={progressBarRef} className="fixed top-0 left-0 right-0 h-1 bg-accent origin-left z-50 scale-x-0" />
             <Header />
             <main className="flex-1" dir={isAr ? 'rtl' : 'ltr'}>
                  <section className="pt-32 pb-16 sm:pt-40 sm:pb-24 text-center bg-card/50">
@@ -152,36 +197,47 @@ export default function ProcessPage() {
 
                 <section id="process-steps" className="py-24 sm:py-32">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="space-y-24">
-                            {processSteps.map((step, index) => (
-                                <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center process-step">
-                                    <div className={`space-y-6 ${index % 2 === 1 ? 'lg:order-last' : ''}`}>
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-accent text-accent-foreground">
-                                                <step.icon className="h-6 w-6" />
+                        <div className="relative">
+                            {/* Central Timeline */}
+                            <div ref={timelineRef} className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2">
+                                <div ref={progressRef} className="w-full bg-accent"></div>
+                            </div>
+                            
+                            <div className="space-y-16 lg:space-y-0">
+                                {processSteps.map((step, index) => (
+                                    <div key={index} className="grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center process-step relative lg:min-h-[50vh]">
+                                        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 lg:top-1/2">
+                                            <div className="step-icon flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-card border-2 border-border text-muted-foreground transition-all duration-300">
+                                                <step.icon className="h-8 w-8" />
                                             </div>
+                                        </div>
+
+                                        {/* Content Block */}
+                                        <div className={`step-content lg:col-start-${index % 2 === 0 ? 1 : 2} lg:row-start-1 ${index % 2 === 0 ? 'lg:text-right' : 'lg:text-left'} space-y-4`}>
                                             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                                                 {step.title[lang]}
                                             </h2>
+                                            <p className="text-muted-foreground text-lg leading-relaxed">
+                                                {step.description[lang]}
+                                            </p>
                                         </div>
-                                        <p className="text-muted-foreground text-lg leading-relaxed">
-                                            {step.description[lang]}
-                                        </p>
+                                        
+                                        {/* Image Block */}
+                                        <div className={`step-content aspect-w-4 aspect-h-3 mt-8 lg:mt-0 lg:col-start-${index % 2 === 0 ? 2 : 1} lg:row-start-1`}>
+                                            <Image
+                                                src={step.imageUrl}
+                                                alt={step.title.en}
+                                                width={800}
+                                                height={600}
+                                                className="object-cover w-full h-full rounded-lg shadow-2xl"
+                                                data-ai-hint={step.imageHint}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="aspect-w-4 aspect-h-3">
-                                        <Image
-                                            src={step.imageUrl}
-                                            alt={step.title.en}
-                                            width={800}
-                                            height={600}
-                                            className="object-cover w-full h-full rounded-lg shadow-2xl"
-                                            data-ai-hint={step.imageHint}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
 
-                            <Card className="bg-card/60 border-accent/50 text-center p-12 rounded-lg process-step">
+                            <Card className="bg-card/60 border-accent/50 text-center p-12 rounded-lg mt-24 cta-card-animate">
                                 <CardHeader>
                                     <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl">{t.ctaTitle}</CardTitle>
                                     <CardDescription className="mt-4 text-lg max-w-2xl mx-auto text-muted-foreground">
@@ -202,6 +258,16 @@ export default function ProcessPage() {
                 </section>
             </main>
             <Footer />
+
+            <style jsx>{`
+                .step-icon.is-active {
+                    background-color: hsl(var(--accent));
+                    color: hsl(var(--accent-foreground));
+                    border-color: hsl(var(--accent));
+                    transform: scale(1.1);
+                }
+            `}</style>
         </div>
     );
-}
+
+    
