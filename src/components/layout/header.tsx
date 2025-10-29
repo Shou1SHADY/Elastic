@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Languages, Globe } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -50,7 +50,7 @@ const Header: FC = () => {
         className='fixed top-8 left-1/2 -translate-x-1/2 z-50'
       >
         <div className="flex h-14 items-center justify-center rounded-full border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6">
-          <Link href={getLocaleHref("/")} className="flex-shrink-0 mr-6">
+          <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <Logo />
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
@@ -66,7 +66,7 @@ const Header: FC = () => {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center ml-4">
+          <div className={cn("hidden md:flex items-center", isAr ? "mr-4" : "ml-4")}>
              <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -85,7 +85,7 @@ const Header: FC = () => {
             </DropdownMenu>
           </div>
 
-          <div className="md:hidden ml-4">
+          <div className={cn("md:hidden", isAr ? "mr-4" : "ml-4")}>
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
               {mobileMenuOpen ? <X /> : <Menu />}
               <span className="sr-only">Toggle menu</span>
