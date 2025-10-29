@@ -6,8 +6,14 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { Menu, X, Languages, Globe } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const navLinks = [
   { href: '/about', label: 'About', arLabel: 'من نحن' },
@@ -19,7 +25,8 @@ const navLinks = [
 const Header: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const lang = pathname.split('/')[1];
+  const router = useRouter();
+  const lang = pathname.split('/')[1] as 'en' | 'ar';
   const isAr = lang === 'ar';
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -30,6 +37,12 @@ const Header: FC = () => {
     if (href === '/') return isAr ? '/ar' : '/en';
     return isAr ? `/ar${href}` : `/en${href}`;
   };
+
+  const handleLanguageChange = (newLang: 'en' | 'ar') => {
+    const newPath = pathname.replace(`/${lang}`, `/${newLang}`);
+    router.push(newPath);
+  };
+
 
   return (
     <>
@@ -52,6 +65,26 @@ const Header: FC = () => {
               </Link>
             ))}
           </nav>
+
+          <div className="hidden md:flex items-center ml-4">
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe className="h-[1.2rem] w-[1.2rem]" />
+                  <span className="sr-only">Toggle language</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange('ar')}>
+                  العربية
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <div className="md:hidden ml-4">
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
               {mobileMenuOpen ? <X /> : <Menu />}
@@ -88,6 +121,10 @@ const Header: FC = () => {
                 </Link>
               ))}
             </nav>
+            <div className="mt-8 flex gap-4">
+               <Button variant={lang === 'en' ? 'secondary' : 'ghost'} onClick={() => { handleLanguageChange('en'); setMobileMenuOpen(false); }}>English</Button>
+               <Button variant={lang === 'ar' ? 'secondary' : 'ghost'} onClick={() => { handleLanguageChange('ar'); setMobileMenuOpen(false); }}>العربية</Button>
+            </div>
             <div className="absolute bottom-10">
                <Button asChild size="lg" variant="outline">
                 <Link href={getLocaleHref("/contact")} onClick={() => setMobileMenuOpen(false)}>
