@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Premium custom rubber keychains and patches manufacturer.',
 };
 
-export default function RootLayout({
+export default function LangLayout({
   children,
   params,
 }: Readonly<{
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={params.lang} dir={params.lang === 'ar' ? 'rtl' : 'ltr'} className="dark">
-      <body className={inter.variable}>
+      <body className={cn(inter.variable, 'font-sans')}>
         {children}
         <Toaster />
       </body>
