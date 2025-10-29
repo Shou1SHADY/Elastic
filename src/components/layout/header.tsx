@@ -38,6 +38,7 @@ const Header: FC = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
 
 
   const isShrunken = isScrolled && scrollDirection === 'down' && !isHovered;
@@ -46,16 +47,17 @@ const Header: FC = () => {
     const tl = gsap.timeline();
 
     if (isShrunken) {
-      tl.to(headerRef.current, { width: 56, height: 56, borderRadius: '50%', duration: 0.4, ease: 'power3.inOut' })
-        .to([navRef.current, langRef.current], { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4')
-        .to(logoRef.current, { x: isAr ? 4 : -4, duration: 0.4, ease: 'power3.inOut'}, '-=0.4');
+      tl.to(headerRef.current, { width: 56, height: 56, borderRadius: '1rem', duration: 0.4, ease: 'power3.inOut' })
+        .to([navRef.current, langRef.current, logoRef.current], { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4')
+        .to(iconRef.current, { opacity: 1, duration: 0.2, ease: 'power3.inOut' }, '-=0.2');
+
     } else {
       tl.to(headerRef.current, { width: 'auto', height: 56, borderRadius: '9999px', duration: 0.4, ease: 'power3.inOut' })
-        .to([navRef.current, langRef.current], { opacity: 1, duration: 0.3, ease: 'power3.inOut' }, '-=0.2')
-        .to(logoRef.current, { x: 0, duration: 0.4, ease: 'power3.inOut'}, '-=0.4');
+        .to([navRef.current, langRef.current, logoRef.current], { opacity: 1, duration: 0.3, ease: 'power3.inOut' }, '-=0.2')
+        .to(iconRef.current, { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4');
     }
 
-  }, [isShrunken, isAr]);
+  }, [isShrunken]);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const getLabel = (link: typeof navLinks[0]) => (isAr ? link.arLabel : link.label);
@@ -77,8 +79,12 @@ const Header: FC = () => {
         className='fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50'
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => { if(isShrunken) window.scrollTo({ top: 0, behavior: 'smooth'})}}
       >
         <div ref={headerRef} className="flex h-14 items-center justify-center border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden">
+          <div ref={iconRef} className="absolute opacity-0 text-foreground">
+             <ArrowUp/>
+          </div>
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <div ref={logoRef}>
               <Logo />
