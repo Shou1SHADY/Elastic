@@ -25,7 +25,7 @@ const Header: FC = () => {
       <header
         className='fixed top-4 left-1/2 -translate-x-1/2 z-50'
       >
-        <div className="flex h-14 items-center justify-center rounded-full border border-border/50 bg-background/80 px-4 shadow-lg backdrop-blur-lg md:px-6">
+        <div className="flex h-14 items-center justify-center rounded-full border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6">
           <Link href="/" className="flex-shrink-0 mr-6">
             <Logo />
           </Link>
