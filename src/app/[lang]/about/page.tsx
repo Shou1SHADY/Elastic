@@ -77,21 +77,27 @@ export default function AboutPage() {
     );
 
     // Animate philosophy section
-    gsap.fromTo('.philosophy-animate',
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        scrollTrigger: {
-          trigger: '#about-philosophy',
-          start: 'top 80%',
-          toggleActions: 'play none none none',
-        },
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power3.out',
+    const philosophyTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#about-philosophy',
+        start: 'top 80%',
+        toggleActions: 'play none none none',
       }
+    });
+
+    philosophyTl.fromTo('.philosophy-title-animate', 
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+    ).fromTo('.philosophy-body-animate',
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+      "-=0.6"
+    ).fromTo('.philosophy-image-animate',
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+      "-=0.6"
     );
+
 
     // Animate values section title
      gsap.fromTo('.values-title-animate',
@@ -148,14 +154,14 @@ export default function AboutPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
               <div className="space-y-6">
-                 <h2 className="philosophy-animate text-3xl font-bold tracking-tighter sm:text-4xl">
+                 <h2 className="philosophy-title-animate text-3xl font-bold tracking-tighter sm:text-4xl">
                   {t.philosophyTitle}
                 </h2>
-                <p className="philosophy-animate text-muted-foreground text-lg leading-relaxed">
+                <p className="philosophy-body-animate text-muted-foreground text-lg leading-relaxed">
                   {t.philosophyBody}
                 </p>
               </div>
-               <div className="philosophy-animate aspect-w-4 aspect-h-3">
+               <div className="philosophy-image-animate aspect-w-4 aspect-h-3">
                   <Image
                       src="https://picsum.photos/seed/about-us/800/600"
                       alt="Our team at work"
@@ -194,5 +200,3 @@ export default function AboutPage() {
     </div>
   );
 }
-
-    
