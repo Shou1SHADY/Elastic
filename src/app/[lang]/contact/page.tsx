@@ -122,21 +122,21 @@ export default function ContactPage() {
         <div className="flex flex-col min-h-screen bg-background">
             <Header />
             <main className="flex-1" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                <section className="pt-32 pb-16 sm:pt-40 sm:pb-24 text-center">
+                <section className="pt-28 pb-12 sm:pt-32 sm:pb-16 text-center">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-foreground">
                            {t.title}
                         </h1>
-                        <p className="mt-4 md:mt-6 max-w-2xl mx-auto text-md md:text-xl text-muted-foreground">
+                        <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground">
                             {t.subtitle}
                         </p>
                     </div>
                 </section>
                 
-                <section id="contact-form" ref={sectionRef} className="py-16 sm:py-24 bg-card/50">
+                <section id="contact-form" ref={sectionRef} className="py-12 sm:py-16">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-                            <div className="lg:col-span-2 contact-animate">
+                            <div className="lg:col-span-2 contact-animate bg-card/50 p-6 sm:p-8 rounded-lg">
                                 <Form {...form}>
                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -164,7 +164,7 @@ export default function ContactPage() {
                                   <CardHeader>
                                     <CardTitle className="text-2xl font-bold tracking-tight">{t.contactInfo}</CardTitle>
                                   </CardHeader>
-                                  <CardContent className="space-y-6 text-base md:text-lg">
+                                  <CardContent className="space-y-6 text-sm md:text-base">
                                     <div className="flex items-start gap-4">
                                         <Mail className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                                         <div>

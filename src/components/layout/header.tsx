@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -140,9 +141,9 @@ const Header: FC = () => {
             </DropdownMenu>
           </div>
 
-          <div className={cn("md:hidden", isAr ? "mr-4" : "ml-4")}>
+          <div className={cn("md:hidden", isAr ? "mr-auto" : "ml-auto", mobileMenuOpen ? 'invisible' : 'visible')}>
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
-              {mobileMenuOpen ? <X /> : <Menu />}
+              <Menu />
               <span className="sr-only">Toggle menu</span>
             </Button>
           </div>

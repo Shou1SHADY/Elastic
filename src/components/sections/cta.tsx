@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -26,12 +27,12 @@ export default function CTA() {
   const contactHref = isAr ? '/ar/contact' : '/en/contact';
 
   return (
-    <section className="py-24 sm:py-32 bg-card">
+    <section className="py-20 sm:py-24 bg-card">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
+        <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter sm:text-5xl text-foreground">
           {t.title}
         </h2>
-        <p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
+        <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
           {t.subtitle}
         </p>
         <div className="mt-10">

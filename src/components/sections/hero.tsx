@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef, useEffect } from 'react';
@@ -143,9 +144,9 @@ export default function Hero() {
         
         <div
           ref={textRef}
-          className="absolute inset-0 z-20 flex h-full flex-col items-center justify-center text-center"
+          className="absolute inset-0 z-20 flex h-full flex-col items-center justify-center text-center p-4"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white drop-shadow-2xl">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white drop-shadow-2xl">
             Elastic – Molding Ideas Into Reality
           </h1>
           <p className="mt-6 text-lg md:text-xl max-w-2xl text-white/80">
