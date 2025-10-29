@@ -1,10 +1,14 @@
 'use client';
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { PencilRuler, WholeWord, Beaker, PackageCheck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
+gsap.registerPlugin(ScrollTrigger);
 
 const processSteps = [
   {
@@ -42,6 +46,29 @@ export default function Process() {
   const lang = pathname.split('/')[1];
   const isAr = lang === 'ar';
 
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (el) {
+      gsap.fromTo(el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none none',
+          },
+          duration: 1,
+          ease: 'power3.out',
+        }
+      );
+    }
+  }, []);
+
   const t = {
     en: {
       subheading: "How We Work",
@@ -61,7 +88,7 @@ export default function Process() {
   const localeHref = isAr ? '/ar/process' : '/en/process';
 
   return (
-    <section id="process" className="py-24 sm:py-32 bg-card/50">
+    <section id="process" ref={sectionRef} className="py-24 sm:py-32 bg-card/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <span className="text-sm font-bold uppercase text-accent">{localeContent.subheading}</span>

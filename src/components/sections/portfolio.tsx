@@ -1,5 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Image from 'next/image';
 import { products, type Product } from '@/data/products';
 import { Button } from '@/components/ui/button';
@@ -11,6 +13,8 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { ArrowRight, Check } from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ProductCard = ({ product, onSelect }: { product: Product; onSelect: (product: Product) => void }) => {
   return (
@@ -45,9 +49,31 @@ const ProductCard = ({ product, onSelect }: { product: Product; onSelect: (produ
 
 export default function Portfolio() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (el) {
+      gsap.fromTo(el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none none',
+          },
+          duration: 1,
+          ease: 'power3.out',
+        }
+      );
+    }
+  }, []);
 
   return (
-    <section id="portfolio" className="py-24 sm:py-32">
+    <section id="portfolio" ref={sectionRef} className="py-24 sm:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <span className="text-sm font-bold uppercase text-accent">Our Work</span>
