@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Languages } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
+import { usePathname, useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   customerName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -55,7 +56,11 @@ const translations = {
 };
 
 export default function Contact() {
-  const [language, setLanguage] = useState<'en' | 'ar'>('en');
+  const router = useRouter();
+  const pathname = usePathname();
+  const currentLang = pathname.startsWith('/ar') ? 'ar' : 'en';
+  
+  const [language, setLanguage] = useState<'en' | 'ar'>(currentLang);
   const { toast } = useToast();
   const t = translations[language];
 
@@ -63,6 +68,10 @@ export default function Contact() {
     resolver: zodResolver(formSchema),
     defaultValues: { customerName: "", customerEmail: "", company: "", inquiryText: "" },
   });
+
+  useEffect(() => {
+    setLanguage(currentLang);
+  }, [currentLang]);
 
   const { isSubmitting } = form.formState;
 
@@ -90,7 +99,9 @@ export default function Contact() {
   }
 
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'en' ? 'ar' : 'en'));
+    const newLang = language === 'en' ? 'ar' : 'en';
+    const newPath = pathname.replace(`/${language}`, `/${newLang}`);
+    router.push(newPath);
   };
 
   return (
