@@ -67,8 +67,14 @@ export default function Hero() {
     };
 
     const render = () => {
-      if(images[imageSequence.frame] && context) {
-        drawImageCover(context, images[imageSequence.frame]);
+      const img = images[imageSequence.frame];
+      if (
+        img &&
+        img.complete &&
+        img.naturalWidth > 0 &&
+        context
+      ) {
+        drawImageCover(context, img);
       }
     };
 
