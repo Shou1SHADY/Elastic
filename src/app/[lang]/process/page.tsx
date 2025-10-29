@@ -105,27 +105,27 @@ export default function ProcessPage() {
     const isAr = lang === 'ar';
     const t = translations[lang] || translations.en;
 
-    const stepsRef = useRef(null);
+    const stepsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      const el = stepsRef.current;
-      if (el) {
-        gsap.fromTo(el,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 80%',
-              end: 'bottom 20%',
-              toggleActions: 'play none none none',
-            },
-            duration: 1,
-            ease: 'power3.out',
-          }
-        );
-      }
+        const steps = gsap.utils.toArray('.process-step');
+        if (steps.length > 0) {
+            gsap.fromTo(steps, {
+                opacity: 0,
+                y: 50
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: stepsRef.current,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none',
+                }
+            });
+        }
     }, []);
 
     return (
@@ -143,11 +143,11 @@ export default function ProcessPage() {
                     </div>
                 </section>
 
-                <section id="process-steps" ref={stepsRef} className="py-24 sm:py-32">
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <section id="process-steps" className="py-24 sm:py-32">
+                    <div ref={stepsRef} className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="space-y-24">
                             {processSteps.map((step, index) => (
-                                <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                                <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center process-step">
                                     <div className={`space-y-6 ${index % 2 === 1 ? 'lg:order-last' : ''}`}>
                                         <div className="flex items-center gap-4">
                                             <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-accent text-accent-foreground">
@@ -174,7 +174,7 @@ export default function ProcessPage() {
                                 </div>
                             ))}
 
-                            <Card className="bg-card/60 border-accent/50 text-center p-12 rounded-lg">
+                            <Card className="bg-card/60 border-accent/50 text-center p-12 rounded-lg process-step">
                                 <CardHeader>
                                     <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl">{t.ctaTitle}</CardTitle>
                                     <CardDescription className="mt-4 text-lg max-w-2xl mx-auto text-muted-foreground">

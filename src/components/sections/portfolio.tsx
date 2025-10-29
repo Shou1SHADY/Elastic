@@ -19,7 +19,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ProductCard = ({ product, onSelect }: { product: Product; onSelect: (product: Product) => void }) => {
   return (
     <div
-      className="group relative overflow-hidden rounded-lg bg-card shadow-lg cursor-pointer transition-all duration-300 hover:shadow-accent/20 hover:-translate-y-2"
+      className="group portfolio-card relative overflow-hidden rounded-lg bg-card shadow-lg cursor-pointer transition-all duration-300 hover:shadow-accent/20 hover:-translate-y-2"
       onClick={() => onSelect(product)}
       onKeyDown={(e) => e.key === 'Enter' && onSelect(product)}
       role="button"
@@ -52,23 +52,23 @@ export default function Portfolio() {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (el) {
-      gsap.fromTo(el,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none none',
-          },
-          duration: 1,
-          ease: 'power3.out',
-        }
-      );
+    const cards = gsap.utils.toArray('.portfolio-card');
+    if (cards.length > 0) {
+      gsap.fromTo(cards, {
+        opacity: 0,
+        y: 50
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      });
     }
   }, []);
 
