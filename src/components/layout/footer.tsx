@@ -13,10 +13,11 @@ const navLinks = [
 
 const Footer = () => {
   const pathname = usePathname();
-  const isAr = pathname.startsWith('/ar');
+  const lang = pathname.split('/')[1];
+  const isAr = lang === 'ar';
 
   const getLabel = (link: typeof navLinks[0]) => (isAr ? link.arLabel : link.label);
-  const getLocaleHref = (href: string) => isAr ? `/ar${href}` : href;
+  const getLocaleHref = (href: string) => (isAr ? `/ar${href}` : `/en${href}`);
 
   return (
     <footer className="bg-card border-t border-border/50">

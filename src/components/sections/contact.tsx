@@ -100,7 +100,8 @@ export default function Contact() {
 
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'ar' : 'en';
-    const newPath = pathname.replace(`/${language}`, `/${newLang}`);
+    const currentPath = pathname.substring(3); // Remove /en or /ar
+    const newPath = `/${newLang}${currentPath}`;
     router.push(newPath);
   };
 

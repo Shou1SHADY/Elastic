@@ -19,15 +19,16 @@ const navLinks = [
 const Header: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const isAr = pathname.startsWith('/ar');
+  const lang = pathname.split('/')[1];
+  const isAr = lang === 'ar';
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const getLabel = (link: typeof navLinks[0]) => (isAr ? link.arLabel : link.label);
 
   const getLocaleHref = (href: string) => {
-    if (href === '/') return isAr ? '/ar' : '/';
-    return isAr ? `/ar${href}` : href;
+    if (href === '/') return isAr ? '/ar' : '/en';
+    return isAr ? `/ar${href}` : `/en${href}`;
   };
 
   return (
