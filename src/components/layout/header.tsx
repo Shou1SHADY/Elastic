@@ -12,6 +12,7 @@ const navLinks = [
   { href: '#about', label: 'About' },
   { href: '#process', label: 'Process' },
   { href: '#portfolio', label: 'Portfolio' },
+  { href: '#contact', label: 'Contact' },
 ];
 
 const Header: FC = () => {
@@ -53,11 +54,6 @@ const Header: FC = () => {
                 </Link>
               ))}
             </nav>
-            <div className="hidden md:block">
-              <Button asChild>
-                <Link href="#contact">Get a Quote</Link>
-              </Button>
-            </div>
             <div className="md:hidden">
               <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
                 {mobileMenuOpen ? <X /> : <Menu />}
@@ -67,11 +63,11 @@ const Header: FC = () => {
           </div>
         </div>
       </header>
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          'fixed inset-0 z-40 bg-background/95 backdrop-blur-xl md:hidden transition-transform duration-300 ease-in-out',
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          'fixed inset-0 z-40 bg-background/95 backdrop-blur-xl md:hidden transition-opacity duration-300 ease-in-out',
+          mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         )}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center h-full">
@@ -87,8 +83,8 @@ const Header: FC = () => {
                 </Link>
               ))}
             </nav>
-            <div className="mt-12">
-               <Button asChild size="lg">
+            <div className="absolute bottom-10">
+               <Button asChild size="lg" variant="outline">
                 <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>Get a Quote</Link>
               </Button>
             </div>
