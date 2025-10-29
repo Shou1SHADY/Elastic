@@ -111,20 +111,20 @@ export default function AboutPage() {
     
     // Animate value cards
     gsap.utils.toArray<HTMLDivElement>('.value-card-animate').forEach((card) => {
-        gsap.fromTo(card,
-            { opacity: 0, y: 50 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: card,
-                    start: 'top 85%',
-                    toggleActions: 'play none none none',
-                }
-            }
-        );
+      const icon = card.querySelector('.value-icon');
+      const textContent = card.querySelectorAll('.value-text');
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        }
+      });
+      
+      tl.fromTo(card, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+        .fromTo(icon, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' }, "-=0.5")
+        .fromTo(textContent, { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.2, duration: 0.6, ease: 'power2.out' }, "-=0.3");
     });
 
   }, []);
@@ -179,11 +179,11 @@ export default function AboutPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
                     {t.values.map((value, index) => (
                         <div key={index} className="value-card-animate text-center p-8 bg-background rounded-lg shadow-lg">
-                            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-accent text-accent-foreground mx-auto mb-6">
+                            <div className="value-icon flex items-center justify-center h-16 w-16 rounded-full bg-accent text-accent-foreground mx-auto mb-6">
                                 <value.icon className="h-8 w-8" />
                             </div>
-                            <h3 className="text-xl font-semibold text-foreground">{value.title}</h3>
-                            <p className="mt-2 text-muted-foreground">{value.description}</p>
+                            <h3 className="value-text text-xl font-semibold text-foreground">{value.title}</h3>
+                            <p className="value-text mt-2 text-muted-foreground">{value.description}</p>
                         </div>
                     ))}
                 </div>
@@ -194,3 +194,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+    
