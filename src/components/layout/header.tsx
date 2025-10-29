@@ -53,7 +53,7 @@ const Header: FC = () => {
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <Logo />
           </Link>
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className={cn("hidden md:flex items-center", isAr ? "space-x-reverse space-x-6" : "space-x-6")}>
             {navLinks.map((link) => (
               <Link
                 key={link.href}

@@ -47,7 +47,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} ElasticForm. {isAr ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}</p>
+          <p>&copy; {new Date().getFullYear()} Elastic. {isAr ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}</p>
         </div>
       </div>
     </footer>

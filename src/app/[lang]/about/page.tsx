@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { CheckCircle, Users, Target, Eye } from "lucide-react";
+import { Users, Target, Eye } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from 'next/navigation';
 
@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 const translations = {
   en: {
     heroTitle: "Innovation in Every Mold",
-    heroSubtitle: "ElasticForm is a B2B partner dedicated to transforming your creative ideas into tangible, high-quality custom rubber keychains and patches.",
+    heroSubtitle: "Elastic is a B2B partner dedicated to transforming your creative ideas into tangible, high-quality custom rubber keychains and patches.",
     philosophyTitle: "Our Philosophy",
     philosophyBody: "Our futuristic approach to manufacturing combines precision engineering with durable materials to produce results that not only look good but last. We are the silent partner behind your brand's standout promotional material. We believe in building partnerships through quality and reliability.",
     valuesTitle: "Our Core Values",
@@ -39,7 +39,7 @@ const translations = {
   },
   ar: {
     heroTitle: "الابتكار في كل قالب",
-    heroSubtitle: "إلاستيك فورم هي شريك أعمال B2B مكرس لتحويل أفكارك الإبداعية إلى منتجات ملموسة وعالية الجودة من سلاسل المفاتيح والبقع المطاطية المخصصة.",
+    heroSubtitle: "إلاستيك هي شريك أعمال B2B مكرس لتحويل أفكارك الإبداعية إلى منتجات ملموسة وعالية الجودة من سلاسل المفاتيح والبقع المطاطية المخصصة.",
     philosophyTitle: "فلسفتنا",
     philosophyBody: "نهجنا المستقبلي في التصنيع يجمع بين الهندسة الدقيقة والمواد المتينة لإنتاج نتائج لا تبدو جيدة فحسب، بل تدوم طويلاً. نحن الشريك الصامت وراء المواد الترويجية المتميزة لعلامتك التجارية. نؤمن ببناء شراكات من خلال الجودة والموثوقية.",
     valuesTitle: "قيمنا الأساسية",

@@ -11,7 +11,6 @@ export default function Splash({ onFinished }: SplashProps) {
   const splashRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const elasticRef = useRef<HTMLSpanElement>(null);
-  const formRef = useRef<HTMLSpanElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,7 +22,7 @@ export default function Splash({ onFinished }: SplashProps) {
       },
     });
 
-    gsap.set([elasticRef.current, formRef.current], { y: 0, opacity: 1 });
+    gsap.set([elasticRef.current], { y: 0, opacity: 1 });
     gsap.set(backgroundRef.current, { scale: 1.2, opacity: 0 });
 
     tl.to(backgroundRef.current, {
@@ -36,11 +35,6 @@ export default function Splash({ onFinished }: SplashProps) {
         elasticRef.current,
         { x: -50, opacity: 0, duration: 1.2, ease: 'power3.out' },
         '-=1.2'
-      )
-      .from(
-        formRef.current,
-        { x: 50, opacity: 0, duration: 1.2, ease: 'power3.out' },
-        '<',
       )
       .to(splashRef.current, {
         opacity: 0,
@@ -59,7 +53,6 @@ export default function Splash({ onFinished }: SplashProps) {
       <div ref={backgroundRef} className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
       <div ref={logoRef} className="text-3xl sm:text-4xl font-bold tracking-tighter text-foreground flex">
         <span ref={elasticRef} className="opacity-0">Elastic</span>
-        <span ref={formRef} className="text-accent opacity-0">Form</span>
       </div>
     </div>
   );
