@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -47,9 +46,10 @@ const Header: FC = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
                 >
                   {link.label}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out"></span>
                 </Link>
               ))}
             </nav>

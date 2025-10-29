@@ -27,8 +27,8 @@ export default function Hero() {
     const context = canvas.getContext('2d');
     if (!context) return;
     
-    canvas.width = 1158;
-    canvas.height = 770;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     const images: HTMLImageElement[] = [];
     const imageSequence = {
@@ -48,13 +48,13 @@ export default function Hero() {
     const firstImage = images[0];
     firstImage.onload = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(firstImage, 0, 0);
+        context.drawImage(firstImage, 0, 0, canvas.width, canvas.height);
     };
 
     const render = () => {
       if(images[imageSequence.frame]) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(images[imageSequence.frame], 0, 0);
+        context.drawImage(images[imageSequence.frame], 0, 0, canvas.width, canvas.height);
       }
     };
 
@@ -99,8 +99,17 @@ export default function Hero() {
         scrub: 0.5,
       },
     });
+    
+    const handleResize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        render();
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
+      window.removeEventListener('resize', handleResize);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
@@ -108,7 +117,7 @@ export default function Hero() {
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-        <canvas ref={canvasRef} className="w-full h-auto max-w-full max-h-full object-contain"></canvas>
+        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full object-cover"></canvas>
         
         <div className="absolute inset-0 bg-black/20 z-10" />
         
