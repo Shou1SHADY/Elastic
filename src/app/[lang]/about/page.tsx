@@ -69,63 +69,95 @@ export default function AboutPage() {
   const isAr = lang === 'ar';
   const t = translations[lang] || translations.en;
   
-  const animatedRefs = useRef<(HTMLDivElement | null)[]>([]);
-
   useEffect(() => {
-    animatedRefs.current.forEach((el) => {
-      if (el) {
-        gsap.fromTo(el,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              end: 'bottom 20%',
-              toggleActions: 'play none none none',
-            },
-            duration: 1,
-            ease: 'power3.out',
-          }
-        );
-      }
-    });
-  }, []);
+    // Animate hero section
+    gsap.fromTo('.hero-animate', 
+        { opacity: 0, y: 30 }, 
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.2, delay: 0.2 }
+    );
 
-  const addToRefs = (el: HTMLDivElement) => {
-    if (el && !animatedRefs.current.includes(el)) {
-      animatedRefs.current.push(el);
+    // Animate philosophy section
+    gsap.fromTo('.philosophy-animate',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: '#about-philosophy',
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power3.out',
+      }
+    );
+
+    // Animate values section title
+     gsap.fromTo('.values-title-animate',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: '#about-values',
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+        duration: 1,
+        ease: 'power3.out',
+      }
+    );
+    
+    // Animate value cards
+    const valueCards = gsap.utils.toArray('.value-card-animate');
+    if (valueCards.length > 0) {
+      gsap.fromTo(valueCards, {
+          opacity: 0,
+          y: 50
+      }, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.2,
+          scrollTrigger: {
+              trigger: '#about-values',
+              start: 'top 70%',
+              toggleActions: 'play none none none',
+          }
+      });
     }
-  };
+
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background" dir={isAr ? 'rtl' : 'ltr'}>
       <Header />
       <main className="flex-1">
-        <section className="pt-32 pb-16 sm:pt-40 sm:pb-24 text-center bg-card/50">
+        <section className="pt-32 pb-20 sm:pt-48 sm:pb-28 text-center bg-card/50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
+            <h1 className="hero-animate text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
               {t.heroTitle}
             </h1>
-            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+            <p className="hero-animate mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
               {t.heroSubtitle}
             </p>
           </div>
         </section>
 
-        <section id="about-philosophy" ref={addToRefs} className="py-24 sm:py-32">
+        <section id="about-philosophy" className="py-24 sm:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
               <div className="space-y-6">
-                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                 <h2 className="philosophy-animate text-3xl font-bold tracking-tighter sm:text-4xl">
                   {t.philosophyTitle}
                 </h2>
-                <p className="text-muted-foreground text-lg">
+                <p className="philosophy-animate text-muted-foreground text-lg leading-relaxed">
                   {t.philosophyBody}
                 </p>
               </div>
-               <div className="aspect-w-4 aspect-h-3">
+               <div className="philosophy-animate aspect-w-4 aspect-h-3">
                   <Image
                       src="https://picsum.photos/seed/about-us/800/600"
                       alt="Our team at work"
@@ -139,16 +171,16 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section id="about-values" ref={addToRefs} className="py-24 sm:py-32 bg-card/50">
+        <section id="about-values" className="py-24 sm:py-32 bg-card/50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                    <h2 className="values-title-animate text-3xl font-bold tracking-tighter sm:text-4xl">
                         {t.valuesTitle}
                     </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
                     {t.values.map((value, index) => (
-                        <div key={index} className="text-center p-8 bg-background rounded-lg shadow-lg">
+                        <div key={index} className="value-card-animate text-center p-8 bg-background rounded-lg shadow-lg">
                             <div className="flex items-center justify-center h-16 w-16 rounded-full bg-accent text-accent-foreground mx-auto mb-6">
                                 <value.icon className="h-8 w-8" />
                             </div>
