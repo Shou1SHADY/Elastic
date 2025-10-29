@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,7 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Languages, Mail, Phone, MapPin } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,7 +37,6 @@ const translations = {
     inquiry: "Your Inquiry",
     submit: "Submit Inquiry",
     submitting: "Submitting...",
-    toggle: "Switch to Arabic",
     successTitle: "Inquiry Sent!",
     successDescription: "Thank you for reaching out. Here is a draft response to your inquiry:",
     errorTitle: "Submission Failed",
@@ -51,7 +52,6 @@ const translations = {
     inquiry: "استفسارك",
     submit: "إرسال الاستفسار",
     submitting: "جارٍ الإرسال...",
-    toggle: "التبديل إلى الإنجليزية",
     successTitle: "تم إرسال الاستفسار!",
     successDescription: "شكرًا لتواصلك معنا. إليك مسودة رد على استفسارك:",
     errorTitle: "فشل الإرسال",
@@ -61,7 +61,6 @@ const translations = {
 };
 
 export default function ContactPage() {
-    const router = useRouter();
     const pathname = usePathname();
     const currentLang = pathname.startsWith('/ar') ? 'ar' : 'en';
     
@@ -69,7 +68,7 @@ export default function ContactPage() {
     const { toast } = useToast();
     const t = translations[language];
 
-    const formRef = useRef(null);
+    const sectionRef = useRef(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -81,7 +80,7 @@ export default function ContactPage() {
     }, [currentLang]);
 
     useEffect(() => {
-      const el = formRef.current;
+      const el = sectionRef.current;
       if (el) {
         gsap.fromTo(el,
           { opacity: 0, y: 50 },
@@ -126,11 +125,6 @@ export default function ContactPage() {
         }
     }
 
-    const toggleLanguage = () => {
-        const newLang = language === 'en' ? 'ar' : 'en';
-        const newPath = `/${newLang}/contact`;
-        router.push(newPath);
-      };
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
@@ -147,14 +141,8 @@ export default function ContactPage() {
                     </div>
                 </section>
                 
-                <section id="contact-form" ref={formRef} className="py-24 sm:py-32 bg-card/50">
+                <section id="contact-form" ref={sectionRef} className="py-24 sm:py-32 bg-card/50">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                       <div className="flex justify-end mb-6">
-                          <Button variant="ghost" onClick={toggleLanguage} size="sm">
-                            <Languages className="h-4 w-4 mr-2" />
-                            {t.toggle}
-                          </Button>
-                        </div>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                             <div className="lg:col-span-2">
                                 <Form {...form}>
@@ -180,8 +168,11 @@ export default function ContactPage() {
                                 </Form>
                             </div>
                             <div className="space-y-8">
-                                <h3 className="text-2xl font-bold tracking-tight">{t.contactInfo}</h3>
-                                <div className="space-y-6 text-lg">
+                                <Card>
+                                  <CardHeader>
+                                    <CardTitle className="text-2xl font-bold tracking-tight">{t.contactInfo}</CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="space-y-6 text-lg">
                                     <div className="flex items-start gap-4">
                                         <Mail className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                                         <div>
@@ -203,12 +194,13 @@ export default function ContactPage() {
                                             <p className="text-muted-foreground">123 Innovation Drive<br/>Suite 404, Tech Park</p>
                                         </div>
                                     </div>
-                                </div>
+                                  </CardContent>
+                                </Card>
                                 <div className="mt-8 rounded-lg overflow-hidden shadow-lg">
                                     <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.206434460498!2d-73.988242084593!3d40.7588959793268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6434225%3A0x1ba9e7464161a87a!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1628884224535!5m2!1sen!2sus"
                                         width="100%"
-                                        height="300"
+                                        height="260"
                                         style={{ border: 0 }}
                                         allowFullScreen={true}
                                         loading="lazy"
@@ -224,4 +216,5 @@ export default function ContactPage() {
             <Footer />
         </div>
     );
-}
+
+    
