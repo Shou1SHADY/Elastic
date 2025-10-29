@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={params.lang} dir={params.lang === 'ar' ? 'rtl' : 'ltr'} className="dark">
-      <body className={cn('font-body antialiased', inter.variable)}>
+      <body className={inter.variable}>
         {children}
         <Toaster />
       </body>
