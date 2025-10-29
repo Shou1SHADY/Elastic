@@ -1,5 +1,8 @@
 
 'use client';
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { PencilRuler, WholeWord, Beaker, PackageCheck, Truck, ArrowRight } from 'lucide-react';
@@ -8,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const processSteps = [
   {
@@ -100,6 +105,29 @@ export default function ProcessPage() {
     const isAr = lang === 'ar';
     const t = translations[lang] || translations.en;
 
+    const stepsRef = useRef(null);
+
+    useEffect(() => {
+      const el = stepsRef.current;
+      if (el) {
+        gsap.fromTo(el,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 80%',
+              end: 'bottom 20%',
+              toggleActions: 'play none none none',
+            },
+            duration: 1,
+            ease: 'power3.out',
+          }
+        );
+      }
+    }, []);
+
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <Header />
@@ -115,7 +143,7 @@ export default function ProcessPage() {
                     </div>
                 </section>
 
-                <section id="process-steps" className="py-24 sm:py-32">
+                <section id="process-steps" ref={stepsRef} className="py-24 sm:py-32">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="space-y-24">
                             {processSteps.map((step, index) => (

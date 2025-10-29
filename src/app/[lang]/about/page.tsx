@@ -1,7 +1,14 @@
+'use client';
+
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { CheckCircle } from "lucide-react";
 import Image from "next/image";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutPage() {
     const values = [
@@ -19,6 +26,29 @@ export default function AboutPage() {
     }
   ];
 
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (el) {
+      gsap.fromTo(el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none none',
+          },
+          duration: 1,
+          ease: 'power3.out',
+        }
+      );
+    }
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
@@ -34,7 +64,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section id="about-content" className="py-24 sm:py-32">
+        <section id="about-content" ref={contentRef} className="py-24 sm:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
               <div className="space-y-6">

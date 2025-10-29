@@ -1,9 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { autoRespondToInquiry } from '@/ai/flows/auto-respond-to-inquiries';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -13,6 +15,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Languages, Mail, Phone, MapPin } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const formSchema = z.object({
   customerName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -65,6 +69,8 @@ export default function ContactPage() {
     const { toast } = useToast();
     const t = translations[language];
 
+    const formRef = useRef(null);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: { customerName: "", customerEmail: "", company: "", inquiryText: "" },
@@ -73,6 +79,27 @@ export default function ContactPage() {
     useEffect(() => {
         setLanguage(currentLang);
     }, [currentLang]);
+
+    useEffect(() => {
+      const el = formRef.current;
+      if (el) {
+        gsap.fromTo(el,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 80%',
+              end: 'bottom 20%',
+              toggleActions: 'play none none none',
+            },
+            duration: 1,
+            ease: 'power3.out',
+          }
+        );
+      }
+    }, []);
 
     const { isSubmitting } = form.formState;
 
@@ -120,7 +147,7 @@ export default function ContactPage() {
                     </div>
                 </section>
                 
-                <section id="contact-form" className="py-24 sm:py-32 bg-card/50">
+                <section id="contact-form" ref={formRef} className="py-24 sm:py-32 bg-card/50">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                        <div className="flex justify-end mb-6">
                           <Button variant="ghost" onClick={toggleLanguage} size="sm">
@@ -137,7 +164,7 @@ export default function ContactPage() {
                                             <FormItem><FormLabel>{t.name}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={form.control} name="customerEmail" render={({ field }) => (
-                                            <FormItem><FormLabel>{t.email}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>{t.email}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></Form--message></FormItem>
                                         )} />
                                         </div>
                                         <FormField control={form.control} name="company" render={({ field }) => (
