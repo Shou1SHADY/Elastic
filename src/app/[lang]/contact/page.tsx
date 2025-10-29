@@ -164,7 +164,7 @@ export default function ContactPage() {
                                             <FormItem><FormLabel>{t.name}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={form.control} name="customerEmail" render={({ field }) => (
-                                            <FormItem><FormLabel>{t.email}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></Form--message></FormItem>
+                                            <FormItem><FormLabel>{t.email}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         </div>
                                         <FormField control={form.control} name="company" render={({ field }) => (
