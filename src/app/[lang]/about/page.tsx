@@ -110,24 +110,22 @@ export default function AboutPage() {
     );
     
     // Animate value cards
-    const valueCards = gsap.utils.toArray('.value-card-animate');
-    if (valueCards.length > 0) {
-      gsap.fromTo(valueCards, {
-          opacity: 0,
-          y: 50
-      }, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          stagger: 0.2,
-          scrollTrigger: {
-              trigger: '#about-values',
-              start: 'top 70%',
-              toggleActions: 'play none none none',
-          }
-      });
-    }
+    gsap.utils.toArray<HTMLDivElement>('.value-card-animate').forEach((card) => {
+        gsap.fromTo(card,
+            { opacity: 0, y: 50 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none',
+                }
+            }
+        );
+    });
 
   }, []);
 
