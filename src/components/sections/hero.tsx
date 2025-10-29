@@ -12,14 +12,26 @@ export default function Hero() {
     const video = videoRef.current;
     if (!video) return;
 
+    // Ensure metadata is loaded before we try to manipulate the video
+    const onLoadedMetadata = () => {
+      video.pause();
+      video.currentTime = 0;
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      // Run once on mount to set initial state
+      handleScroll();
+    };
+
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
+    
     // We need to be able to play the video for seeking.
     // Muted allows autoplay without user interaction.
     video.muted = true; 
-    video.play();
+    video.play().catch(error => {
+      // Autoplay was prevented. This is common and okay.
+      // The user scrolling will still control the video.
+      console.info("Autoplay was prevented, which is expected. User scrolling will control the video.");
+    });
     
-    // Pause on the first frame initially.
-    video.pause();
-
     const handleScroll = () => {
       if (!heroRef.current || !video) return;
 
@@ -50,12 +62,11 @@ export default function Hero() {
       setTextTransform(progress * 150);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Run once on mount to set initial state
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [videoRef.current]); // Dependency on videoRef.current to re-run if it changes
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      video.removeEventListener('loadedmetadata', onLoadedMetadata);
+    }
+  }, []);
 
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
