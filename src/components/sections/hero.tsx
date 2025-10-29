@@ -9,108 +9,85 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const video = videoRef.current;
     const hero = heroRef.current;
-    const canvas = canvasRef.current;
     const text = textRef.current;
     const arrow = arrowRef.current;
-    
-    if (!hero || !canvas || !text || !arrow) return;
 
-    const context = canvas.getContext('2d');
-    if (!context) return;
+    if (!video || !hero || !text || !arrow) return;
 
-    // Create a video element programmatically to act as our data source
-    const video = document.createElement('video');
-    video.src = 'https://storage.googleapis.com/studio-hosting-assets/hero-video.mp4';
-    video.muted = true;
-    video.playsInline = true;
-    video.crossOrigin = 'anonymous'; // Important for canvas
-    videoRef.current = video;
-
+    // Ensure video is ready for seeking
     const onLoadedMetadata = () => {
-      // Set canvas dimensions once video is loaded
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      // Draw the first frame
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      video.pause();
+      video.currentTime = 0;
 
-      const frameCount = Math.floor(video.duration * 30); // Assuming 30fps
-
-      // An object to animate
-      const frameState = { frame: 0 };
-
-      // GSAP timeline for scroll-based video frames
-      ScrollTrigger.create({
-        trigger: hero,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          const frame = Math.round(self.progress * (frameCount - 1));
-          if (frameState.frame !== frame) {
-            frameState.frame = frame;
-            video.currentTime = frame / 30;
-          }
-        },
-      });
-
-      video.addEventListener('seeked', () => {
-        if(context) {
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        }
-      });
-
-      // Fade/move text with scroll
-      gsap.to(text, {
-        y: -150,
-        opacity: 0,
-        ease: 'none',
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: hero,
           start: 'top top',
           end: 'bottom top',
-          scrub: 0.5,
+          scrub: 0.5, // smooth scrubbing
         },
       });
 
-      // Fade out arrow quickly
-      gsap.to(arrow, {
+      // Animate video currentTime
+      tl.to(video, {
+        currentTime: video.duration,
+        ease: 'none',
+      }, 0);
+      
+      // Animate text fade/move
+      tl.to(text, {
+        y: -150,
         opacity: 0,
         ease: 'none',
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: '20% top',
-          scrub: 0.5,
-        },
-      });
+      }, 0);
     };
 
+    // Fade out arrow quickly
+    gsap.to(arrow, {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: '20% top',
+        scrub: 0.5,
+      },
+    });
+
     video.addEventListener('loadedmetadata', onLoadedMetadata);
-    video.load(); // Start loading the video data
+
+    // This helps with autoplay issues on some browsers
+    video.play().catch(() => {
+      console.info('Autoplay was prevented. Scroll will control the video.');
+    });
 
     return () => {
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      videoRef.current = null;
     };
   }, []);
 
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <canvas
-          ref={canvasRef}
+        <video
+          ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
+          preload="auto"
+          playsInline
+          muted
+          loop
+          crossOrigin="anonymous"
+          src="https://storage.googleapis.com/studio-hosting-assets/hero-video.mp4"
         />
-
+        
         <div className="absolute inset-0 bg-black/50 z-10" />
         <div
           className="absolute inset-0 z-10"
