@@ -9,35 +9,62 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const video = videoRef.current;
     const hero = heroRef.current;
+    const canvas = canvasRef.current;
     const text = textRef.current;
     const arrow = arrowRef.current;
+    
+    if (!hero || !canvas || !text || !arrow) return;
 
-    if (!video || !hero || !text || !arrow) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
 
-    // Ensure video is ready for seeking
+    // Create a video element programmatically to act as our data source
+    const video = document.createElement('video');
+    video.src = 'https://storage.googleapis.com/studio-hosting-assets/hero-video.mp4';
+    video.muted = true;
+    video.playsInline = true;
+    video.crossOrigin = 'anonymous'; // Important for canvas
+    videoRef.current = video;
+
     const onLoadedMetadata = () => {
-      video.pause();
-      video.currentTime = 0;
+      // Set canvas dimensions once video is loaded
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw the first frame
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const duration = video.duration || 1;
+      const frameCount = Math.floor(video.duration * 30); // Assuming 30fps
 
-      // GSAP timeline for scroll-based video
-      gsap.to(video, {
-        currentTime: duration,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5, // smooth scrubbing
+      // An object to animate
+      const frameState = { frame: 0 };
+
+      // GSAP timeline for scroll-based video frames
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const frame = Math.round(self.progress * (frameCount - 1));
+          if (frameState.frame !== frame) {
+            frameState.frame = frame;
+            video.currentTime = frame / 30;
+          }
         },
+      });
+
+      video.addEventListener('seeked', () => {
+        if(context) {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
       });
 
       // Fade/move text with scroll
@@ -67,32 +94,22 @@ export default function Hero() {
     };
 
     video.addEventListener('loadedmetadata', onLoadedMetadata);
-
-    // Autoplay muted to allow seeking
-    video.muted = true;
-    video.play().catch(() => {
-      console.info('Autoplay prevented, scroll will control video.');
-    });
+    video.load(); // Start loading the video data
 
     return () => {
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      videoRef.current = null;
     };
   }, []);
 
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <video
-          ref={videoRef}
+        <canvas
+          ref={canvasRef}
           className="absolute inset-0 w-full h-full object-cover"
-          preload="auto"
-          playsInline
-          crossOrigin="anonymous"
-        >
-          <source src="https://storage.googleapis.com/studio-hosting-assets/hero-video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        />
 
         <div className="absolute inset-0 bg-black/50 z-10" />
         <div
