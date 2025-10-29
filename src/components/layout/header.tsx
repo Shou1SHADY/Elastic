@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Globe, ArrowUp } from 'lucide-react';
+import { Menu, X, Globe, Loader } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -39,16 +39,16 @@ const Header: FC = () => {
   const langRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
+  const rotatingIconRef = useRef<HTMLDivElement>(null);
 
   const isShrunken = isScrolled && scrollDirection === 'down' && !isLockedOpen;
 
   useEffect(() => {
-    // If user starts scrolling down, re-enable shrinking
     if (scrollDirection === 'down') {
       setIsLockedOpen(false);
     }
   }, [scrollDirection]);
-
+  
   useEffect(() => {
     const tl = gsap.timeline();
 
@@ -59,11 +59,22 @@ const Header: FC = () => {
 
     } else {
       tl.to(headerRef.current, { width: 'auto', height: 56, borderRadius: '9999px', duration: 0.4, ease: 'power3.inOut' })
-        .to([navRef.current, langRef.current, logoRef.current], { opacity: 1, duration: 0.3, ease: 'power3.inOut' }, '-=0.2')
-        .to(iconRef.current, { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4');
+        .to(iconRef.current, { opacity: 0, duration: 0.2, ease: 'power3.inOut' }, '-=0.4')
+        .to([navRef.current, langRef.current, logoRef.current], { opacity: 1, duration: 0.3, ease: 'power3.inOut' }, '-=0.3');
     }
 
   }, [isShrunken]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (rotatingIconRef.current) {
+        const rotation = window.scrollY / 5;
+        gsap.to(rotatingIconRef.current, { rotation: rotation, duration: 0.1, ease: 'power1.out' });
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const getLabel = (link: typeof navLinks[0]) => (isAr ? link.arLabel : link.label);
@@ -88,7 +99,9 @@ const Header: FC = () => {
       >
         <div ref={headerRef} className="flex h-14 items-center justify-center border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden">
           <div ref={iconRef} className="absolute opacity-0 text-foreground">
-             <ArrowUp/>
+             <div ref={rotatingIconRef}>
+                <Loader/>
+             </div>
           </div>
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <div ref={logoRef}>
