@@ -2,7 +2,7 @@
 'use client';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { PencilRuler, Mold, Beaker, PackageCheck, Truck, ArrowRight } from 'lucide-react';
+import { PencilRuler, WholeWord, Beaker, PackageCheck, Truck, ArrowRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -24,7 +24,7 @@ const processSteps = [
     imageHint: "design meeting"
   },
   {
-    icon: Mold,
+    icon: WholeWord,
     title: {
       en: '2. Mold Creation',
       ar: '٢. إنشاء القالب'
