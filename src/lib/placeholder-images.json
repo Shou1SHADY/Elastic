@@ -1,66 +1,6 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-frame-0",
-      "description": "Manufacturing process frame 1",
-      "imageUrl": "https://images.unsplash.com/photo-1718295444080-21693bcf3481?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxpbmR1c3RyaWFsJTIwbWFjaGluZXxlbnwwfHx8fDE3NjE3NTE2NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "industrial machine"
-    },
-    {
-      "id": "hero-frame-1",
-      "description": "Manufacturing process frame 2",
-      "imageUrl": "https://images.unsplash.com/photo-1552361308-5b91dc7a3afd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2x0ZW4lMjBydWJiZXJ8ZW58MHx8fHwxNzYxNzUzMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "molten rubber"
-    },
-    {
-      "id": "hero-frame-2",
-      "description": "Manufacturing process frame 3",
-      "imageUrl": "https://images.unsplash.com/photo-1673118121742-13425ba31701?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcmVjaXNpb24lMjBtb2xkfGVufDB8fHx8MTc2MTc1MzI3MHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "precision mold"
-    },
-    {
-      "id": "hero-frame-3",
-      "description": "Manufacturing process frame 4",
-      "imageUrl": "https://images.unsplash.com/photo-1665930489997-e5e9d527ae39?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoeWRyYXVsaWMlMjBwcmVzc3xlbnwwfHx8fDE3NjE3NDk4MDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "hydraulic press"
-    },
-    {
-      "id": "hero-frame-4",
-      "description": "Manufacturing process frame 5",
-      "imageUrl": "https://images.unsplash.com/photo-1609824390238-d4f066ddaaf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29vbGluZyUyMHByb2Nlc3N8ZW58MHx8fHwxNzYxNzUzMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cooling process"
-    },
-    {
-      "id": "hero-frame-5",
-      "description": "Manufacturing process frame 6",
-      "imageUrl": "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyb2JvdGljJTIwYXJtfGVufDB8fHx8MTc2MTc1MzI3MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "robotic arm"
-    },
-    {
-      "id": "hero-frame-6",
-      "description": "Manufacturing process frame 7",
-      "imageUrl": "https://images.unsplash.com/photo-1624957866304-b0dee1955e29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxxdWFsaXR5JTIwY29udHJvbHxlbnwwfHx8fDE3NjE2NjEzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "quality control"
-    },
-    {
-      "id": "hero-frame-7",
-      "description": "Manufacturing process frame 8",
-      "imageUrl": "https://images.unsplash.com/photo-1628093753622-7421e9caa63f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxsYXNlciUyMGV0Y2hpbmd8ZW58MHx8fHwxNzYxNzIwNDgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "laser etching"
-    },
-    {
-      "id": "hero-frame-8",
-      "description": "Manufacturing process frame 9",
-      "imageUrl": "https://images.unsplash.com/photo-1728724569841-05305ee197df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmaW5pc2hlZCUyMHByb2R1Y3R8ZW58MHx8fHwxNzYxNzUzMjcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "finished product"
-    },
-    {
-      "id": "hero-frame-9",
-      "description": "Manufacturing process frame 10",
-      "imageUrl": "https://images.unsplash.com/photo-1758445445126-72b4424e1d7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxrZXljaGFpbiUyMGRldGFpbHxlbnwwfHx8fDE3NjE3NTMyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "keychain detail"
-    },
-    {
       "id": "portfolio-1",
       "description": "Custom branded keychain",
       "imageUrl": "https://images.unsplash.com/photo-1591446893688-65b002e4a608?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjdXN0b20lMjBrZXljaGFpbnxlbnwwfHx8fDE3NjE3NTMyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",

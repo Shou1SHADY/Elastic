@@ -1,73 +1,75 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { cn } from '@/lib/utils';
 import { ArrowDown } from 'lucide-react';
 
-const heroFrames = PlaceHolderImages.filter(img => img.id.startsWith('hero-frame-'));
-const totalFrames = heroFrames.length;
-
 export default function Hero() {
-  const [frame, setFrame] = useState(0);
   const [textTransform, setTextTransform] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // We need to be able to play the video for seeking.
+    // Muted allows autoplay without user interaction.
+    video.muted = true; 
+    video.play();
+    
+    // Pause on the first frame initially.
+    video.pause();
+
     const handleScroll = () => {
-      if (!heroRef.current) return;
+      if (!heroRef.current || !video) return;
 
       const { top, height } = heroRef.current.getBoundingClientRect();
       const scrollableHeight = height - window.innerHeight;
 
       if (top > 0) {
-        setFrame(0);
         setTextTransform(0);
+        video.currentTime = 0;
         return;
       }
-
+      
+      const videoDuration = video.duration;
       if (top < -scrollableHeight) {
-        setFrame(totalFrames - 1);
         setTextTransform(100);
+        if (videoDuration) {
+          video.currentTime = videoDuration;
+        }
         return;
       }
       
       const progress = Math.max(0, Math.min(1, -top / scrollableHeight));
-      const currentFrame = Math.min(totalFrames - 1, Math.floor(progress * totalFrames));
-      setFrame(currentFrame);
+      
+      if (videoDuration) {
+        video.currentTime = progress * videoDuration;
+      }
+      
       setTextTransform(progress * 150);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once on mount to set initial state
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [videoRef.current]); // Dependency on videoRef.current to re-run if it changes
 
   return (
     <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {heroFrames.map((img, i) => (
-          <div
-            key={img.id}
-            className={cn(
-              "absolute inset-0 transition-opacity duration-300 ease-in-out",
-              i === frame ? "opacity-100 z-0" : "opacity-0"
-            )}
-            aria-hidden={i !== frame}
-          >
-            <Image
-              src={img.imageUrl}
-              alt={img.description}
-              fill
-              priority={i === 0}
-              className="object-cover"
-              data-ai-hint={img.imageHint}
-              quality={80}
-            />
-          </div>
-        ))}
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          preload="auto"
+          playsInline
+          muted // Muted is important for autoplay policies
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         
         <div className="absolute inset-0 bg-black/50 z-10" />
         <div 
