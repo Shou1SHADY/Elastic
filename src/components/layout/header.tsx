@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Globe, KeyRound } from 'lucide-react';
+import { Menu, X, Globe, ArrowUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -32,7 +32,7 @@ const Header: FC = () => {
   const isAr = lang === 'ar';
 
   const { isScrolled, scrollDirection } = useScroll(100);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isLockedOpen, setIsLockedOpen] = useState(false);
 
   const headerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
@@ -40,8 +40,14 @@ const Header: FC = () => {
   const logoRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
 
+  const isShrunken = isScrolled && scrollDirection === 'down' && !isLockedOpen;
 
-  const isShrunken = isScrolled && scrollDirection === 'down' && !isHovered;
+  useEffect(() => {
+    // If user starts scrolling down, re-enable shrinking
+    if (scrollDirection === 'down') {
+      setIsLockedOpen(false);
+    }
+  }, [scrollDirection]);
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -76,14 +82,13 @@ const Header: FC = () => {
   return (
     <>
       <header
-        className='fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50'
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className='fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50 cursor-pointer'
+        onMouseEnter={() => { if(isShrunken) setIsLockedOpen(true) }}
         onClick={() => { if(isShrunken) window.scrollTo({ top: 0, behavior: 'smooth'})}}
       >
         <div ref={headerRef} className="flex h-14 items-center justify-center border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden">
           <div ref={iconRef} className="absolute opacity-0 text-foreground">
-             <KeyRound/>
+             <ArrowUp/>
           </div>
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <div ref={logoRef}>
