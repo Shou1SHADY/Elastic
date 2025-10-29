@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Languages, Mail, Phone, MapPin } from 'lucide-react';
+import { Loader2, Mail, Phone, MapPin } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -216,5 +216,4 @@ export default function ContactPage() {
             <Footer />
         </div>
     );
-
-    
+}
