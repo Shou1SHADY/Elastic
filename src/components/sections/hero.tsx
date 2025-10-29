@@ -129,7 +129,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={heroRef} id="home" className="relative h-[300vh] w-full">
+    <section ref={heroRef} id="home" className="relative h-[400vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full object-cover"></canvas>
         
