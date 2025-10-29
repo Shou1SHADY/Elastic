@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Globe, ArrowUp } from 'lucide-react';
+import { Menu, X, Globe, KeyRound } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -83,7 +83,7 @@ const Header: FC = () => {
       >
         <div ref={headerRef} className="flex h-14 items-center justify-center border border-border/50 bg-background/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden">
           <div ref={iconRef} className="absolute opacity-0 text-foreground">
-             <ArrowUp/>
+             <KeyRound/>
           </div>
           <Link href={getLocaleHref("/")} className={cn("flex-shrink-0", isAr ? "ml-6" : "mr-6")}>
             <div ref={logoRef}>
