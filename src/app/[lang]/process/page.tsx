@@ -104,32 +104,39 @@ export default function ProcessPage() {
     const lang = pathname.split('/')[1] as 'en' | 'ar';
     const isAr = lang === 'ar';
     const t = translations[lang] || translations.en;
-
-    const stepsRef = useRef<HTMLDivElement>(null);
+    
+    const progressBarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        gsap.to(progressBarRef.current, {
+            scaleX: 1,
+            scrollTrigger: {
+                scrub: 0.5,
+            }
+        });
+
         const steps = gsap.utils.toArray('.process-step');
-        if (steps.length > 0) {
-            gsap.fromTo(steps, {
+        steps.forEach(step => {
+            gsap.fromTo(step, {
                 opacity: 0,
-                y: 50
+                y: 100
             }, {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
+                duration: 1,
                 ease: 'power3.out',
-                stagger: 0.2,
                 scrollTrigger: {
-                    trigger: stepsRef.current,
-                    start: 'top 80%',
-                    toggleActions: 'play none none none',
+                    trigger: step as gsap.DOMTarget,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse',
                 }
             });
-        }
+        });
     }, []);
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
+            <div ref={progressBarRef} className="fixed top-0 left-0 right-0 h-1 bg-accent origin-left z-50 scale-x-0" />
             <Header />
             <main className="flex-1" dir={isAr ? 'rtl' : 'ltr'}>
                  <section className="pt-32 pb-16 sm:pt-40 sm:pb-24 text-center bg-card/50">
@@ -144,7 +151,7 @@ export default function ProcessPage() {
                 </section>
 
                 <section id="process-steps" className="py-24 sm:py-32">
-                    <div ref={stepsRef} className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="space-y-24">
                             {processSteps.map((step, index) => (
                                 <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center process-step">
