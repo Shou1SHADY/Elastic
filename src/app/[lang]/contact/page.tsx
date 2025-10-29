@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { autoRespondToInquiry } from '@/ai/flows/auto-respond-to-inquiries';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mail, Phone, MapPin } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const formSchema = z.object({
   customerName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -80,24 +77,19 @@ export default function ContactPage() {
     }, [currentLang]);
 
     useEffect(() => {
-      const el = sectionRef.current;
-      if (el) {
-        gsap.fromTo(el,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 80%',
-              end: 'bottom 20%',
-              toggleActions: 'play none none none',
-            },
-            duration: 1,
-            ease: 'power3.out',
-          }
-        );
-      }
+        const el = sectionRef.current;
+        if (el) {
+            gsap.fromTo('.contact-animate', 
+                { opacity: 0, y: 50 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 0.8, 
+                    ease: 'power3.out', 
+                    stagger: 0.2
+                }
+            );
+        }
     }, []);
 
     const { isSubmitting } = form.formState;
@@ -135,19 +127,19 @@ export default function ContactPage() {
                         <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
                            {t.title}
                         </h1>
-                        <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+                        <p className="mt-4 md:mt-6 max-w-2xl mx-auto text-md md:text-xl text-muted-foreground">
                             {t.subtitle}
                         </p>
                     </div>
                 </section>
                 
-                <section id="contact-form" ref={sectionRef} className="py-24 sm:py-32 bg-card/50">
+                <section id="contact-form" ref={sectionRef} className="py-16 sm:py-24 bg-card/50">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                            <div className="lg:col-span-2">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+                            <div className="lg:col-span-2 contact-animate">
                                 <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <FormField control={form.control} name="customerName" render={({ field }) => (
                                             <FormItem><FormLabel>{t.name}</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
@@ -167,17 +159,17 @@ export default function ContactPage() {
                                     </form>
                                 </Form>
                             </div>
-                            <div className="space-y-8">
+                            <div className="space-y-8 contact-animate">
                                 <Card>
                                   <CardHeader>
                                     <CardTitle className="text-2xl font-bold tracking-tight">{t.contactInfo}</CardTitle>
                                   </CardHeader>
-                                  <CardContent className="space-y-6 text-lg">
+                                  <CardContent className="space-y-6 text-base md:text-lg">
                                     <div className="flex items-start gap-4">
                                         <Mail className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                                         <div>
                                             <p className="font-semibold">Email</p>
-                                            <a href="mailto:hello@elasticform.com" className="text-muted-foreground hover:text-accent">hello@elasticform.com</a>
+                                            <a href="mailto:hello@elasticform.com" className="text-muted-foreground hover:text-accent transition-colors">hello@elasticform.com</a>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-4">
@@ -196,7 +188,7 @@ export default function ContactPage() {
                                     </div>
                                   </CardContent>
                                 </Card>
-                                <div className="mt-8 rounded-lg overflow-hidden shadow-lg">
+                                <div className="mt-8 rounded-lg overflow-hidden shadow-lg contact-animate">
                                     <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.206434460498!2d-73.988242084593!3d40.7588959793268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6434225%3A0x1ba9e7464161a87a!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1628884224535!5m2!1sen!2sus"
                                         width="100%"

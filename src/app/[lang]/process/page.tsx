@@ -105,83 +105,111 @@ export default function ProcessPage() {
     const isAr = lang === 'ar';
     const t = translations[lang] || translations.en;
     
-    const stepsContainerRef = useRef<HTMLDivElement>(null);
-    const progressRef = useRef<HTMLDivElement>(null);
-    const timelineRef = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
-        const stepsContainer = stepsContainerRef.current;
-        const progress = progressRef.current;
-        const timeline = timelineRef.current;
-        if (!stepsContainer || !progress || !timeline) return;
+        let ctx = gsap.context(() => {
+            // GSAP MatchMedia for responsive animations
+            gsap.matchMedia().add({
+                isDesktop: `(min-width: 1024px)`,
+                isMobile: `(max-width: 1023px)`,
+            }, (context) => {
+                let { isDesktop, isMobile } = context.conditions!;
 
-        ScrollTrigger.create({
-            trigger: stepsContainer,
-            start: "top center",
-            end: "bottom center",
-            onUpdate: (self) => {
-                gsap.set(progress, { height: `${self.progress * 100}%` });
-            },
-        });
+                if (isDesktop) {
+                    const stepsContainer = document.querySelector("#desktop-steps-container");
+                    const progress = document.querySelector("#desktop-progress-bar");
+                    
+                    if (stepsContainer && progress) {
+                        ScrollTrigger.create({
+                            trigger: stepsContainer,
+                            start: "top center",
+                            end: "bottom center",
+                            onUpdate: (self) => {
+                                gsap.set(progress, { height: `${self.progress * 100}%` });
+                            },
+                        });
 
-        const steps = gsap.utils.toArray<HTMLDivElement>('.process-step');
-        steps.forEach((step, i) => {
-            const icon = step.querySelector('.step-icon');
-            const content = step.querySelectorAll('.step-content');
+                        const steps = gsap.utils.toArray<HTMLDivElement>('.desktop-process-step');
+                        steps.forEach((step) => {
+                            const icon = step.querySelector('.step-icon');
+                            const content = step.querySelectorAll('.step-content');
+                            const isReversed = step.classList.contains('lg:grid-flow-col-dense');
 
-            gsap.fromTo(icon, 
-                { scale: 0.5, autoAlpha: 0.5 }, 
-                {
-                    scale: 1,
-                    autoAlpha: 1,
-                    ease: "power2.inOut",
-                    scrollTrigger: {
-                        trigger: step,
-                        start: 'top center',
-                        end: 'top 40%',
-                        scrub: true,
-                        toggleClass: { targets: icon, className: 'is-active' }
+                            gsap.fromTo(icon, 
+                                { scale: 0.5, autoAlpha: 0.5 }, 
+                                {
+                                    scale: 1,
+                                    autoAlpha: 1,
+                                    ease: "power2.inOut",
+                                    scrollTrigger: {
+                                        trigger: step,
+                                        start: 'top center',
+                                        end: 'top 40%',
+                                        scrub: true,
+                                        toggleClass: { targets: icon, className: 'is-active' }
+                                    }
+                                }
+                            );
+
+                            content.forEach((el) => {
+                                const xVal = isReversed ? -100 : 100;
+                                gsap.fromTo(el, 
+                                    { x: isAr ? -xVal : xVal, autoAlpha: 0 }, 
+                                    {
+                                        x: 0,
+                                        autoAlpha: 1,
+                                        duration: 0.8,
+                                        ease: 'power3.out',
+                                        scrollTrigger: {
+                                            trigger: step,
+                                            start: 'top 75%',
+                                            toggleActions: 'play none none reverse',
+                                        }
+                                    }
+                                );
+                            });
+                        });
                     }
                 }
-            );
 
-            content.forEach((el, j) => {
-                const isReversed = el.classList.contains('lg:col-start-1');
-                const xVal = isReversed ? -100 : 100;
-                
-                gsap.fromTo(el, 
-                    { x: isAr ? -xVal : xVal, autoAlpha: 0 }, 
-                    {
-                        x: 0,
-                        autoAlpha: 1,
-                        duration: 0.8,
-                        ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: step,
-                            start: 'top 75%',
-                            toggleActions: 'play none none reverse',
-                        }
-                    }
-                );
+                if (isMobile) {
+                    const mobileSteps = gsap.utils.toArray<HTMLDivElement>('.mobile-process-step');
+                    mobileSteps.forEach((step) => {
+                         gsap.fromTo(step, 
+                            { y: 50, autoAlpha: 0 }, 
+                            {
+                                y: 0,
+                                autoAlpha: 1,
+                                duration: 0.8,
+                                ease: 'power3.out',
+                                scrollTrigger: {
+                                    trigger: step,
+                                    start: 'top 85%',
+                                    toggleActions: 'play none none reverse',
+                                }
+                            }
+                        );
+                    });
+                }
+            });
+
+            // Animate the final CTA card (works on all screen sizes)
+            gsap.fromTo('.cta-card-animate', {
+                opacity: 0,
+                y: 100
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.cta-card-animate',
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse',
+                }
             });
         });
 
-        // Animate the final CTA card
-        gsap.fromTo('.cta-card-animate', {
-            opacity: 0,
-            y: 100
-        }, {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-                trigger: '.cta-card-animate',
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-            }
-        });
-
+        return () => ctx.revert();
     }, [isAr]);
 
     return (
@@ -193,7 +221,7 @@ export default function ProcessPage() {
                         <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
                             {t.heroTitle}
                         </h1>
-                        <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+                        <p className="mt-4 md:mt-6 max-w-3xl mx-auto text-md md:text-xl text-muted-foreground">
                             {t.heroSubtitle}
                         </p>
                     </div>
@@ -202,23 +230,22 @@ export default function ProcessPage() {
                 <section id="process-steps" className="py-24 sm:py-32">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="relative">
-                            <div className="relative" ref={stepsContainerRef}>
-                                {/* Central Timeline */}
-                                <div ref={timelineRef} className="absolute left-1/2 top-0 h-full w-1 bg-border -translate-x-1/2">
-                                    <div ref={progressRef} className="w-full bg-accent"></div>
+                            
+                            {/* Desktop Timeline Layout */}
+                            <div className="hidden lg:block relative" id="desktop-steps-container">
+                                <div className="absolute left-1/2 top-0 h-full w-1 bg-border -translate-x-1/2">
+                                    <div id="desktop-progress-bar" className="w-full bg-accent"></div>
                                 </div>
-                                
-                                <div className="space-y-16 lg:space-y-0">
+                                <div className="space-y-32">
                                     {processSteps.map((step, index) => (
-                                        <div key={index} className="grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center process-step relative lg:min-h-[50vh]">
-                                            <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 lg:top-1/2">
+                                        <div key={index} className={`desktop-process-step relative grid grid-cols-2 gap-24 items-center ${index % 2 !== 0 ? 'lg:grid-flow-col-dense' : ''}`}>
+                                             <div className="absolute left-1/2 -translate-x-1/2">
                                                 <div className="step-icon flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-card border-2 border-border text-muted-foreground transition-all duration-300">
                                                     <step.icon className="h-8 w-8" />
                                                 </div>
                                             </div>
 
-                                            {/* Content Block */}
-                                            <div className={`step-content lg:col-start-${index % 2 === 0 ? 1 : 2} lg:row-start-1 ${index % 2 === 0 ? 'lg:text-right' : 'lg:text-left'} space-y-4`}>
+                                            <div className={`step-content space-y-4 ${index % 2 === 0 ? 'lg:text-right' : 'lg:text-left'}`}>
                                                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                                                     {step.title[lang]}
                                                 </h2>
@@ -227,8 +254,7 @@ export default function ProcessPage() {
                                                 </p>
                                             </div>
                                             
-                                            {/* Image Block */}
-                                            <div className={`step-content aspect-w-4 aspect-h-3 mt-8 lg:mt-0 lg:col-start-${index % 2 === 0 ? 2 : 1} lg:row-start-1`}>
+                                            <div className="step-content aspect-w-4 aspect-h-3">
                                                 <Image
                                                     src={step.imageUrl}
                                                     alt={step.title.en}
@@ -243,10 +269,40 @@ export default function ProcessPage() {
                                 </div>
                             </div>
 
-                            <Card className="bg-card/60 border-accent/50 text-center p-12 rounded-lg mt-24 cta-card-animate">
+                             {/* Mobile Simple Layout */}
+                            <div className="block lg:hidden space-y-16">
+                                {processSteps.map((step, index) => (
+                                    <div key={index} className="mobile-process-step text-center">
+                                        <div className="flex justify-center items-center gap-4 mb-6">
+                                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-accent text-accent-foreground">
+                                                <step.icon className="h-6 w-6" />
+                                            </div>
+                                            <h2 className="text-2xl font-bold tracking-tighter">
+                                                {step.title[lang]}
+                                            </h2>
+                                        </div>
+                                         <div className="aspect-w-4 aspect-h-3 mb-6">
+                                            <Image
+                                                src={step.imageUrl}
+                                                alt={step.title.en}
+                                                width={800}
+                                                height={600}
+                                                className="object-cover w-full h-full rounded-lg shadow-xl"
+                                                data-ai-hint={step.imageHint}
+                                            />
+                                        </div>
+                                        <p className="text-muted-foreground text-base leading-relaxed max-w-md mx-auto">
+                                            {step.description[lang]}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+
+
+                            <Card className="bg-card/60 border-accent/50 text-center p-8 sm:p-12 rounded-lg mt-24 cta-card-animate">
                                 <CardHeader>
                                     <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl">{t.ctaTitle}</CardTitle>
-                                    <CardDescription className="mt-4 text-lg max-w-2xl mx-auto text-muted-foreground">
+                                    <CardDescription className="mt-4 text-md sm:text-lg max-w-2xl mx-auto text-muted-foreground">
                                         {t.ctaDescription}
                                     </CardDescription>
                                 </CardHeader>
@@ -266,11 +322,13 @@ export default function ProcessPage() {
             <Footer />
 
             <style jsx>{`
-                .step-icon.is-active {
-                    background-color: hsl(var(--accent));
-                    color: hsl(var(--accent-foreground));
-                    border-color: hsl(var(--accent));
-                    transform: scale(1.1);
+                @media (min-width: 1024px) {
+                  .step-icon.is-active {
+                      background-color: hsl(var(--accent));
+                      color: hsl(var(--accent-foreground));
+                      border-color: hsl(var(--accent));
+                      transform: scale(1.1);
+                  }
                 }
             `}</style>
         </div>

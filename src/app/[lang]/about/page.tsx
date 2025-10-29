@@ -139,7 +139,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen bg-background" dir={isAr ? 'rtl' : 'ltr'}>
       <Header />
       <main className="flex-1">
-        <section className="pt-32 pb-20 sm:pt-48 sm:pb-28 text-center bg-card/50">
+        <section className="pt-32 pb-20 sm:pt-40 sm:pb-28 text-center bg-card/50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="hero-animate text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
               {t.heroTitle}
