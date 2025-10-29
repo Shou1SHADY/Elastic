@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import Logo from '@/components/shared/logo';
 
 type SplashProps = {
   onFinished: () => void;
@@ -11,6 +10,9 @@ type SplashProps = {
 export default function Splash({ onFinished }: SplashProps) {
   const splashRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const elasticRef = useRef<HTMLSpanElement>(null);
+  const formRef = useRef<HTMLSpanElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const tl = gsap.timeline({
@@ -21,16 +23,30 @@ export default function Splash({ onFinished }: SplashProps) {
       },
     });
 
-    tl.fromTo(
-      logoRef.current,
-      { opacity: 0, scale: 0.8 },
-      { opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' }
-    )
+    gsap.set([elasticRef.current, formRef.current], { y: 0, opacity: 1 });
+    gsap.set(backgroundRef.current, { scale: 1.2, opacity: 0 });
+
+    tl.to(backgroundRef.current, {
+      scale: 1,
+      opacity: 1,
+      duration: 1.5,
+      ease: 'power3.out',
+    })
+      .from(
+        elasticRef.current,
+        { x: -50, opacity: 0, duration: 1.2, ease: 'power3.out' },
+        '-=1.2'
+      )
+      .from(
+        formRef.current,
+        { x: 50, opacity: 0, duration: 1.2, ease: 'power3.out' },
+        '<',
+      )
       .to(splashRef.current, {
         opacity: 0,
         duration: 0.8,
         ease: 'power2.inOut',
-        delay: 0.5,
+        delay: 0.75,
       });
 
   }, [onFinished]);
@@ -38,10 +54,12 @@ export default function Splash({ onFinished }: SplashProps) {
   return (
     <div
       ref={splashRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-background overflow-hidden"
     >
-      <div ref={logoRef}>
-        <Logo />
+      <div ref={backgroundRef} className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
+      <div ref={logoRef} className="text-3xl sm:text-4xl font-bold tracking-tighter text-foreground flex">
+        <span ref={elasticRef} className="opacity-0">Elastic</span>
+        <span ref={formRef} className="text-accent opacity-0">Form</span>
       </div>
     </div>
   );
