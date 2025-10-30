@@ -5,6 +5,7 @@ import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { ArrowDown } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,6 +31,23 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1] as 'en' | 'ar';
+  const isAr = lang === 'ar';
+
+  const t = {
+    en: {
+      title: "Elastic – Molding Ideas Into Reality",
+      subtitle: "Premium custom rubber keychains and patches, manufactured with precision and innovation.",
+      scroll: "Scroll to explore"
+    },
+    ar: {
+      title: "إلاستيك – نحول الأفكار إلى واقع",
+      subtitle: "سلاسل مفاتيح وبقع مطاطية مخصصة فاخرة، مصنّعة بدقة وابتكار.",
+      scroll: "مرر للأسفل للاستكشاف"
+    }
+  }
+  const content = isAr ? t.ar : t.en;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -147,10 +165,10 @@ export default function Hero() {
           className="absolute inset-0 z-20 flex h-full flex-col items-center justify-center text-center p-4"
         >
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white drop-shadow-2xl">
-            Elastic – Molding Ideas Into Reality
+            {content.title}
           </h1>
           <p className="mt-6 text-lg md:text-xl max-w-2xl text-white/80">
-            Premium custom rubber keychains and patches, manufactured with precision and innovation.
+            {content.subtitle}
           </p>
         </div>
 
@@ -158,7 +176,7 @@ export default function Hero() {
           ref={arrowRef}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center space-y-2"
         >
-          <span className="text-sm text-white/80">Scroll to explore</span>
+          <span className="text-sm text-white/80">{content.scroll}</span>
           <ArrowDown className="animate-bounce text-white" />
         </div>
       </div>

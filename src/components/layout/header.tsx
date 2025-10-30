@@ -90,6 +90,15 @@ const Header: FC = () => {
     router.push(newPath);
   };
 
+  const t = {
+    en: {
+      getQuote: "Get a Quote"
+    },
+    ar: {
+      getQuote: "اطلب عرض سعر"
+    }
+  }
+
 
   return (
     <>
@@ -158,7 +167,7 @@ const Header: FC = () => {
         )}
         dir={isAr ? 'rtl' : 'ltr'}
       >
-         <div className="absolute top-4 right-4">
+         <div className="absolute top-4 right-4" dir="ltr">
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
               <X />
               <span className="sr-only">Close menu</span>
@@ -184,7 +193,7 @@ const Header: FC = () => {
             <div className="absolute bottom-10">
                <Button asChild size="lg" variant="outline">
                 <Link href={getLocaleHref("/contact")} onClick={() => setMobileMenuOpen(false)}>
-                    {isAr ? "اطلب عرض سعر" : "Get a Quote"}
+                    {isAr ? t.ar.getQuote : t.en.getQuote}
                 </Link>
               </Button>
             </div>
